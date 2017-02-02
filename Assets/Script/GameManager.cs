@@ -2,13 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 게임을 관리하는 최상위 매니저
+/// </summary>
 public class GameManager : MonoBehaviour
 {
-
+    /// <summary>
+    /// 싱글톤 
+    /// </summary>
     public static GameManager instance;
 
+    /// <summary>
+    /// 진행중인 버프리스트
+    /// </summary>
     public List<Buff> buffList;
 
+    /// <summary>
+    /// 소유중인 아이템
+    /// </summary>
     public int wood, fire, stone;
 
     void Awake()
@@ -16,17 +27,10 @@ public class GameManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(this);
     }
-
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
+    
     void Update()
     {
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RayCasting(ray);
@@ -44,6 +48,7 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
 
     void GetItem()
     {
