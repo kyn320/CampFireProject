@@ -123,6 +123,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Editor\MapCreatEditor.cs" />
+    <Compile Include="Assets\Editor\SeedEditor.cs" />
     <Compile Include="Assets\Editor\ShurikenScaler.cs" />
   </ItemGroup>
   <ItemGroup>
