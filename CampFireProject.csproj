@@ -52,9 +52,6 @@
     <Reference Include="UnityEngine">
       <HintPath>Library\UnityAssemblies\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Advertisements">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Advertisements.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
@@ -70,9 +67,6 @@
     <Reference Include="UnityEngine.HoloLens">
       <HintPath>Library\UnityAssemblies\UnityEngine.HoloLens.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Purchasing">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Purchasing.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.VR">
       <HintPath>Library\UnityAssemblies\UnityEngine.VR.dll</HintPath>
     </Reference>
@@ -83,6 +77,7 @@
   <ItemGroup>
     <Compile Include="Assets\Campfire\Script\FireLightScript.cs" />
     <Compile Include="Assets\Script\Buff.cs" />
+    <Compile Include="Assets\Script\Camera\CameraMovement.cs" />
     <Compile Include="Assets\Script\CampFire.cs" />
     <Compile Include="Assets\Script\CampFireCustomItem.cs" />
     <Compile Include="Assets\Script\CampFireInfo.cs" />
@@ -90,12 +85,16 @@
     <Compile Include="Assets\Script\Explain.cs" />
     <Compile Include="Assets\Script\Food.cs" />
     <Compile Include="Assets\Script\GameManager.cs" />
+    <Compile Include="Assets\Script\Manager\MapCreator.cs" />
+    <Compile Include="Assets\Script\Map\MapSeed.cs" />
     <Compile Include="Assets\Script\MemoryBox.cs" />
     <Compile Include="Assets\Script\MemoryPuzzle.cs" />
     <Compile Include="Assets\Script\NPC.cs" />
     <Compile Include="Assets\Script\NPCAction.cs" />
     <Compile Include="Assets\Script\NPCCommunicationManager.cs" />
     <Compile Include="Assets\Script\NPCMessage.cs" />
+    <Compile Include="Assets\Script\Player\JumpingTest.cs" />
+    <Compile Include="Assets\Script\Player\PlayerMovement.cs" />
     <Compile Include="Assets\Script\PlayerCostum.cs" />
     <Compile Include="Assets\Script\Recipe.cs" />
     <Compile Include="Assets\Script\UIMainManager.cs" />
