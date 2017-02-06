@@ -60,15 +60,18 @@ public class PlayerMovement : MonoBehaviour
         if (isMoved)
         {
             Move();
+            Slope();
         }
         //그라운드 체크
-        if (ri.useGravity && isGravity) {
+        if (isGravity) {
             GroundCheck();
         }
+        
     }
 
     void Move()
     {
+        //ri.velocity = new Vector2(moveSpeed * h, ri.velocity.y);
         tr.position = Vector3.Lerp(tr.position,tr.position + Vector3.right * moveSpeed * h, Time.deltaTime * moveClamp);
     }
     
@@ -85,9 +88,24 @@ public class PlayerMovement : MonoBehaviour
     /// <returns>땅에 닿으면 True, 아니면 False</returns>
     void GroundCheck()
     {
-        isGrounded = Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.05f);
+        isGrounded = Physics.Raycast(tr.position, -Vector3.up,distToGround + 0.1f);
+        ri.useGravity = !isGrounded;
         if (isGrounded)
+        {
             currentJumpCnt = 0;
+        }
+    }
+
+    void Slope() {
+        RaycastHit hit;
+        Physics.Raycast(tr.position, -Vector3.up, out hit, distToGround + 0.5f);
+        Debug.DrawRay(tr.position,-Vector3.up * (distToGround + 0.5f), Color.red);
+
+        if (isGravity && Mathf.Abs(h) > 0 && hit.collider != null && Mathf.Abs(hit.normal.x) > 0)
+        {
+            tr.position += new Vector3(0, (-hit.distance + distToGround), 0);
+        }
+        
     }
 
     IEnumerator GroundCheckDelay() {
