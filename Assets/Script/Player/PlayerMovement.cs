@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody ri;
     private Transform tr;
     private Collider col;
+    
 
     void Awake()
     {
@@ -66,12 +67,10 @@ public class PlayerMovement : MonoBehaviour
         if (isGravity) {
             GroundCheck();
         }
-        
     }
 
     void Move()
     {
-        //ri.velocity = new Vector2(moveSpeed * h, ri.velocity.y);
         tr.position = Vector3.Lerp(tr.position,tr.position + Vector3.right * moveSpeed * h, Time.deltaTime * moveClamp);
     }
     
@@ -110,6 +109,7 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator GroundCheckDelay() {
         isGravity = false;
+        ri.useGravity = true;
         yield return new WaitForSeconds(groundCheckDelayTime);
         isGravity = true;
     }

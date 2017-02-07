@@ -18,5 +18,6 @@ public class SeedEditor : Editor {
         if (GUILayout.Button("SetHeight")) {
             myScript.SetHeight();
         }
+
     }
 }

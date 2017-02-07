@@ -7,7 +7,8 @@ using UnityEngine;
 /// </summary>
 public class MapSeed : MonoBehaviour
 {
-
+    public bool isFinish = false;
+    public int index = 0;
     /// <summary>
     /// 시드의 아이디
     /// </summary>
@@ -27,15 +28,21 @@ public class MapSeed : MonoBehaviour
     /// <summary>
     /// 마지막 높이 값
     /// </summary>
-    public float lastHeight;
+    public List<float> lastHeight;
     /// <summary>
     /// 마지막 땅
     /// </summary>
-    public GameObject lastLand;
+    public GameObject[] lastLand;
     /// <summary>
     /// 시드가 가지고 있는 방향 리스트입니다.
     /// </summary>
     public List<direction> directionList;
+
+    /// <summary>
+    /// 현재 시드와 연결된 시드들
+    /// </summary>
+    public List<MapSeed> childSeed;
+
     /// <summary>
     /// 시드의 방향을 지정하는 상수 값
     /// </summary>
@@ -53,11 +60,10 @@ public class MapSeed : MonoBehaviour
         return Resources.Load<GameObject>("3D/Seed/" + gameObject.name);
     }
 
-
     public void SetWidth()
     {
         Vector2 temp = Vector2.zero;
-        float lastX = lastLand.transform.position.x + lastLand.transform.localScale.x * lastLand.transform.GetChild(0).GetComponent<MeshFilter>().mesh.bounds.size.x;
+        float lastX = lastLand[0].transform.position.x;
 
         print("마지막 x값 = " + lastX);
 
@@ -66,39 +72,38 @@ public class MapSeed : MonoBehaviour
         width = temp;
     }
 
-    public void SetWidth2()
-    {
-        Vector2 temp = Vector2.zero;
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            float x = transform.GetChild(i).localScale.x * transform.GetChild(i).GetChild(0).GetComponent<MeshFilter>().mesh.bounds.size.x;
-            temp.x += x;
-            print(i + "번째 사이즈 = " + x);
-            if (i + 1 < transform.childCount)
-            {
-                float d = transform.GetChild(i + 1).transform.position.x - (x + transform.GetChild(i).position.x);
-                print(i + "와" + (i + 1) + "의 값을 저장합니다. = " + d);
-                if (d > 0)
-                    temp.x += d;
-            }
-            if (temp.y < transform.GetChild(i).position.y)
-                temp.y = transform.GetChild(i).position.y;
-        }
-        print("total x = " + temp.x);
-        width = temp;
-    }
-
-
     public void SetHeight()
     {
         firstHeight = firstLand.transform.position.y;
-        lastHeight = lastLand.transform.position.y;
+        lastHeight.RemoveRange(0, lastHeight.Count);
+        for (int i = 0; i < lastLand.Length; i++)
+        {
+            lastHeight.Add(lastLand[i].transform.position.y);
+        }
     }
 
-    public void SetHeight2()
+    public void CreateSeed()
     {
-        firstHeight = transform.GetChild(0).position.y;
-        lastHeight = transform.GetChild(transform.childCount - 1).position.y;
+        for (int i = 0; i < lastHeight.Count; i++)
+        {
+            //랜덤을 돌림
+            int rand = Random.Range(0, MapCreator.instance.seedList.Count);
+            //시드를 생성
+            GameObject temp = Instantiate(MapCreator.instance.seedList[rand].LoadPrefab());
+            //시드를 싱글 톤에 등록
+            MapCreator.instance.LimitCreate(temp);
+            temp.GetComponent<MapSeed>().index = this.index + 1;
+            //시드를 연결 시드 리스트에 등록
+            childSeed.Add(temp.GetComponent<MapSeed>());
+            //생성된 시드의 좌표를 현재 좌표 + 넓이, 높이 리스트 배열 값으로 대입
+            temp.transform.position = new Vector2(transform.position.x + width.x, transform.position.y + lastHeight[i]);
+
+            if (index <= MapCreator.instance.mapLength)
+            {
+                temp.GetComponent<MapSeed>().CreateSeed();
+            }
+
+        }
     }
 
 }
