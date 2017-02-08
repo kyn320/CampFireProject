@@ -18,6 +18,10 @@ public class MapSeed : MonoBehaviour
     /// </summary>
     public Vector2 width;
     /// <summary>
+    /// 높이 체커
+    /// </summary>
+    public GameObject[] heightChecker;
+    /// <summary>
     /// 처음 높이 값
     /// </summary>
     public float firstHeight;
@@ -65,10 +69,9 @@ public class MapSeed : MonoBehaviour
         Vector2 temp = Vector2.zero;
         float lastX = lastLand[0].transform.position.x;
 
-        print("마지막 x값 = " + lastX);
-
         temp.x += lastX;
-
+        temp.y = Mathf.Abs(Mathf.Abs(heightChecker[0].transform.position.y) + Mathf.Abs(heightChecker[1].transform.position.y));
+        
         width = temp;
     }
 
