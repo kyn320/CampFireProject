@@ -8,9 +8,15 @@ public class MapCreator : MonoBehaviour
     public static MapCreator instance;
 
     public List<MapSeed> seedList;
+    public GameObject wall;
     public List<GameObject> tileList;
 
+    [Range(10,400)]
     public int mapLength = 10;
+    [Range(2,7)]
+    public int maxFindLoop = 3;
+    [Range(20,35)]
+    public float maringH = 21f;
     public float prevXPos = 0, prevHeight = 0;
 
     private void Awake()
@@ -100,15 +106,10 @@ public class MapCreator : MonoBehaviour
         GameObject temp = Instantiate(seedList[rand].LoadPrefab());
         LimitCreate(temp);
         temp.GetComponent<MapSeed>().CreateSeed();
-
     }
 
     public void LimitCreate(GameObject temp) {
         tileList.Add(temp);
-        if (tileList.Count - 5 > mapLength)
-        {
-            // MapSeed.isFinish = true;
-        }
     }
 
 }

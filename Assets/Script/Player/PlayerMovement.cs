@@ -87,7 +87,7 @@ public class PlayerMovement : MonoBehaviour
     /// <returns>땅에 닿으면 True, 아니면 False</returns>
     void GroundCheck()
     {
-        isGrounded = Physics.Raycast(tr.position, -Vector3.up,distToGround + 0.1f);
+        isGrounded = Physics.Raycast(tr.position, -Vector3.up,distToGround + 0.1f, LayerMask.GetMask("Ground"));
         ri.useGravity = !isGrounded;
         if (isGrounded)
         {
@@ -97,7 +97,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Slope() {
         RaycastHit hit;
-        Physics.Raycast(tr.position, -Vector3.up, out hit, distToGround + 0.5f);
+        Physics.Raycast(tr.position, -Vector3.up, out hit, distToGround + 0.5f, LayerMask.GetMask("Ground"));
         Debug.DrawRay(tr.position,-Vector3.up * (distToGround + 0.5f), Color.red);
 
         if (isGravity && Mathf.Abs(h) > 0 && hit.collider != null && Mathf.Abs(hit.normal.x) > 0)
