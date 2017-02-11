@@ -148,44 +148,38 @@ public class MapSeed : MonoBehaviour
             }
             //마지막 끝내기 시드를 생성
             else {
-                /*
-                //시드를 생성
-                RaycastHit hit2;
-                Physics.Raycast(lastLand[i].transform.position, Vector3.up, out hit, MapCreator.instance.maringH, LayerMask.GetMask("SeedGroup"));
-                Physics.Raycast(lastLand[i].transform.position, Vector3.up, out hit2, MapCreator.instance.maringH, LayerMask.GetMask("Ground"));
-                if (hit.collider != null && hit2.collider != null)
-                {
-                    if (hit.distance > hit2.distance)
-                        WallMaker(hit.distance, i);
-                    else
-                        WallMaker(hit2.distance, i);
-                }
-                else if (hit.collider != null)
-                {
-                    WallMaker(hit.distance, i);
-                }
-                else if (hit2.collider != null)
-                {
-                    WallMaker(hit2.distance, i);
-                }
-                else {
-
-                    WallMaker(0, i);
-                }
-                */
+                WallMaker(i);
             }
         }
     }
 
     //벽을 생성
-    void WallMaker(float dist, int index)
+    void WallMaker(int index)
     {
+        RaycastHit hit;
         GameObject temp = Instantiate(MapCreator.instance.wall);
         //시드를 연결 시드 리스트에 등록
         childSeed.Add(temp.GetComponent<MapSeed>());
-        temp.GetComponent<MapSeed>().firstLand.transform.localScale = new Vector3(dist < 0.1f ? MapCreator.instance.maringH : dist, 1, 1.5f);
-        //생성된 시드의 좌표를 현재 좌표 + 넓이, 높이 리스트 배열 값으로 대입
         temp.transform.position = new Vector2(transform.position.x + width.x, transform.position.y + lastHeight[index]);
+
+        Physics.Raycast(temp.GetComponent<MapSeed>().lastLand[0].transform.position, Vector3.up, out hit, MapCreator.instance.maringH, LayerMask.GetMask("Ground"));
+        if (hit.collider != null)
+        {
+
+            temp.GetComponent<MapSeed>().lastLand[0].transform.localScale = new Vector3(hit.distance, 1, 1.5f);
+        }
+        else
+        {
+            Physics.Raycast(temp.GetComponent<MapSeed>().lastLand[0].transform.position, Vector3.up, out hit, MapCreator.instance.maringH, LayerMask.GetMask("SeedGroup"));
+            if (hit.collider != null)
+            {
+                temp.GetComponent<MapSeed>().lastLand[0].transform.localScale = new Vector3(hit.distance, 1, 1.5f);
+            }
+            else
+                temp.GetComponent<MapSeed>().lastLand[0].transform.localScale = new Vector3(MapCreator.instance.maringH, 1, 1.5f);
+
+        }
+        //생성된 시드의 좌표를 현재 좌표 + 넓이, 높이 리스트 배열 값으로 대입
         temp.transform.parent = MapCreator.instance.gameObject.transform;
     }
 

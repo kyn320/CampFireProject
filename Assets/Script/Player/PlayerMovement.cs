@@ -6,22 +6,23 @@ using UnityEngine;
 /// <summary>
 /// 플레이어를 움직이는 클래스
 /// </summary>
-[RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
 public class PlayerMovement : MonoBehaviour
 {
+    public float stamina = 200f;
 
-    public bool isInputed = true, isMoved = true, isGrounded = false, isGravity = false;
+    public bool isInputed = true, isMoved = true, isWalled = true, isGrounded = false, isGravity = false;
 
     public int currentJumpCnt = 0, maxJumpCnt = 2;
-    public float moveSpeed, JumpPower, moveClamp = 20f;
+    public float moveSpeed, JumpPower;
 
     public float h, groundCheckDelayTime = 0.2f;
-    public float distToGround = 0;
-    
+    public float distToGround = 0, wallDist = 0.7f;
+
     private Rigidbody ri;
     private Transform tr;
     private Collider col;
-    
+
+    public Vector2 pos;
 
     void Awake()
     {
@@ -64,30 +65,29 @@ public class PlayerMovement : MonoBehaviour
             Slope();
         }
         //그라운드 체크
-        if (isGravity) {
+        if (isGravity)
+        {
             GroundCheck();
         }
     }
 
     void Move()
     {
-        tr.position = Vector3.Lerp(tr.position,tr.position + Vector3.right * moveSpeed * h, Time.deltaTime * moveClamp);
+        Vector2 movePos = ri.velocity;
+        movePos.x = h * moveSpeed;
+        ri.velocity = movePos;
     }
-    
+
     void Jump()
     {
         StartCoroutine("GroundCheckDelay");
         ++currentJumpCnt;
-        ri.velocity = new Vector2(ri.velocity.x,JumpPower);
+        ri.velocity = new Vector2(ri.velocity.x, JumpPower);
     }
-
-    /// <summary>
-    /// 땅에 착지 하고 있는지 체크
-    /// </summary>
-    /// <returns>땅에 닿으면 True, 아니면 False</returns>
+    
     void GroundCheck()
     {
-        isGrounded = Physics.Raycast(tr.position, -Vector3.up,distToGround + 0.1f, LayerMask.GetMask("Ground"));
+        isGrounded = Physics.Raycast(tr.position, -Vector3.up, distToGround + 0.1f, LayerMask.GetMask("Ground"));
         ri.useGravity = !isGrounded;
         if (isGrounded)
         {
@@ -95,19 +95,20 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void Slope() {
+    void Slope()
+    {
         RaycastHit hit;
         Physics.Raycast(tr.position, -Vector3.up, out hit, distToGround + 0.5f, LayerMask.GetMask("Ground"));
-        Debug.DrawRay(tr.position,-Vector3.up * (distToGround + 0.5f), Color.red);
+        Debug.DrawRay(tr.position, -Vector3.up * (distToGround + 0.5f), Color.red);
 
         if (isGravity && Mathf.Abs(h) > 0 && hit.collider != null && Mathf.Abs(hit.normal.x) > 0)
         {
-            tr.position += new Vector3(0, (-hit.distance + distToGround), 0);
+            ri.velocity = new Vector2(ri.velocity.x, ri.velocity.y - Mathf.Abs(hit.normal.x));
         }
-        
     }
 
-    IEnumerator GroundCheckDelay() {
+    IEnumerator GroundCheckDelay()
+    {
         isGravity = false;
         ri.useGravity = true;
         yield return new WaitForSeconds(groundCheckDelayTime);

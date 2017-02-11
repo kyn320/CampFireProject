@@ -13,7 +13,7 @@ public class MapCreator : MonoBehaviour
 
     [Range(10,400)]
     public int mapLength = 10;
-    [Range(2,7)]
+    [Range(2,10)]
     public int maxFindLoop = 3;
     [Range(20,35)]
     public float maringH = 21f;
@@ -34,70 +34,6 @@ public class MapCreator : MonoBehaviour
         prevXPos += x;
         prevHeight += h;
     }
-
-    void MakeMap()
-    {
-
-        //초기 값을 설정
-        for (int i = 0; i < mapLength; i++)
-        {
-            int rand = Random.Range(0, seedList.Count);
-            int randDir = (int)seedList[rand].directionList[Random.Range(0, seedList[rand].directionList.Count)];
-            print(i + "번째");
-            switch (randDir)
-            {
-                case 0:
-                    print("위");
-                    break;
-                case 1:
-                    print("아래");
-                    break;
-                case 2:
-                    print("왼");
-                    break;
-                case 3:
-                    print("오른");
-                    break;
-                default:
-                    Debug.LogError("존재하지 않는 방향 입니다. = " + randDir);
-                    break;
-            }
-        }
-
-    }
-
-    void SetSeed(int rand, int dir)
-    {
-        float d = 0;
-        switch (dir)
-        {
-            case 0:
-                tileList.Add(Instantiate(seedList[rand].LoadPrefab()));
-                d = prevHeight - seedList[rand].firstHeight;
-                tileList[tileList.Count - 1].transform.position = new Vector3(prevXPos, d);
-                SetPrevValue(seedList[rand].width.x, seedList[rand].lastHeight[0]);
-                break;
-            case 1:
-                tileList.Add(Instantiate(seedList[rand].LoadPrefab()));
-                d = prevHeight - seedList[rand].firstHeight;
-                tileList[tileList.Count - 1].transform.position = new Vector3(prevXPos, d);
-                SetPrevValue(seedList[rand].width.x, seedList[rand].lastHeight[0]);
-                break;
-            case 2:
-                tileList.Add(Instantiate(seedList[rand].LoadPrefab()));
-                d = prevHeight - seedList[rand].firstHeight;
-                tileList[tileList.Count - 1].transform.position = new Vector3(prevXPos, d);
-                SetPrevValue(seedList[rand].width.x, seedList[rand].lastHeight[0]);
-                break;
-            case 3:
-                tileList.Add(Instantiate(seedList[rand].LoadPrefab()));
-                d = prevHeight - seedList[rand].firstHeight;
-                tileList[tileList.Count - 1].transform.position = new Vector3(prevXPos, d);
-                SetPrevValue(seedList[rand].width.x, seedList[rand].lastHeight[0]);
-                break;
-        }
-    }
-
 
 
     void StartCreateMap()

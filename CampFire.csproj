@@ -94,6 +94,7 @@
     <Compile Include="Assets\Script\NPCCommunicationManager.cs" />
     <Compile Include="Assets\Script\NPCMessage.cs" />
     <Compile Include="Assets\Script\Player\JumpingTest.cs" />
+    <Compile Include="Assets\Script\Player\PlayerController.cs" />
     <Compile Include="Assets\Script\Player\PlayerMovement.cs" />
     <Compile Include="Assets\Script\PlayerCostum.cs" />
     <Compile Include="Assets\Script\Recipe.cs" />
