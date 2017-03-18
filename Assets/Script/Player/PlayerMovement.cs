@@ -13,10 +13,13 @@ public class PlayerMovement : MonoBehaviour
     public bool isInputed = true, isMoved = true, isWalled = true, isGrounded = false, isGravity = false;
 
     public int currentJumpCnt = 0, maxJumpCnt = 2;
+    public int dir = 0;
     public float moveSpeed, JumpPower;
 
     public float h, groundCheckDelayTime = 0.2f;
     public float distToGround = 0, wallDist = 0.7f;
+
+    public Transform wallChecker;
 
     private Rigidbody ri;
     private Transform tr;
@@ -47,9 +50,8 @@ public class PlayerMovement : MonoBehaviour
         {
             //좌우 입력 값
             h = Input.GetAxis("Horizontal");
-
             //점프 입력
-            if (Input.GetKeyDown(KeyCode.Space) && currentJumpCnt < maxJumpCnt)
+            if (!isWalled && Input.GetKeyDown(KeyCode.Space) && currentJumpCnt < maxJumpCnt)
             {
                 Jump();
             }
@@ -59,16 +61,21 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         //움직일 수 있는 경우?
-        if (isMoved)
+        if (isInputed && isMoved)
         {
             Move();
-            Slope();
         }
+
+        Slope();
+
         //그라운드 체크
         if (isGravity)
         {
             GroundCheck();
         }
+        WallCheck();
+        WallJump();
+        pos = ri.velocity;
     }
 
     void Move()
@@ -76,6 +83,12 @@ public class PlayerMovement : MonoBehaviour
         Vector2 movePos = ri.velocity;
         movePos.x = h * moveSpeed;
         ri.velocity = movePos;
+
+        if (h < -0.2f)
+            dir = -1;
+        else if (h > 0.2f)
+            dir = 1;
+
     }
 
     void Jump()
@@ -84,7 +97,31 @@ public class PlayerMovement : MonoBehaviour
         ++currentJumpCnt;
         ri.velocity = new Vector2(ri.velocity.x, JumpPower);
     }
-    
+
+    void WallCheck()
+    {
+        Collider[] hits = Physics.OverlapSphere(wallChecker.position, 0.8f, LayerMask.GetMask("Wall"));
+        if (hits.Length > 0)
+        {
+            isWalled = true;
+        }
+        else {
+            isWalled = false;
+        }
+
+    }
+
+
+    void WallJump()
+    {
+        if (isWalled && Input.GetKeyDown(KeyCode.Space))
+        {
+            isMoved = false;
+            dir *= -1; 
+            ri.velocity = new Vector2(dir * JumpPower, JumpPower);
+        }
+    }
+
     void GroundCheck()
     {
         isGrounded = Physics.Raycast(tr.position, -Vector3.up, distToGround + 0.1f, LayerMask.GetMask("Ground"));
@@ -92,6 +129,8 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded)
         {
             currentJumpCnt = 0;
+            if (!isMoved)
+                isMoved = true;
         }
     }
 
@@ -99,7 +138,6 @@ public class PlayerMovement : MonoBehaviour
     {
         RaycastHit hit;
         Physics.Raycast(tr.position, -Vector3.up, out hit, distToGround + 0.5f, LayerMask.GetMask("Ground"));
-        Debug.DrawRay(tr.position, -Vector3.up * (distToGround + 0.5f), Color.red);
 
         if (isGravity && Mathf.Abs(h) > 0 && hit.collider != null && Mathf.Abs(hit.normal.x) > 0)
         {

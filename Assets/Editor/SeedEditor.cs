@@ -11,9 +11,9 @@ public class SeedEditor : Editor {
         DrawDefaultInspector();
 
         MapSeed myScript = (MapSeed)target;
-        if (GUILayout.Button("SetWidth"))
+        if (GUILayout.Button("SetSize"))
         {
-            myScript.SetWidth();
+            myScript.SetSize();
         }
         if (GUILayout.Button("SetHeight")) {
             myScript.SetHeight();
